@@ -21,7 +21,8 @@ def driver():
 
     prefs = {
         "credentials_enable_service": False,
-        "profile.password_manager_leak_detection": False
+        "profile.password_manager_leak_detection": False,
+        "profile.default_content_setting_values.geolocation": 2
     }
     chrome_options.add_experimental_option("prefs", prefs)
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -89,16 +90,19 @@ def test_recorrido_completo_del_menu_despues_de_login_exitoso(driver):
     time.sleep(2) # Esperamos 2 segundos para que se procese la navegación
     menu.ir_a_gestion_de_servicios_charter() # Navegamos al menú de gestión de servicios chárter
     time.sleep(2) # Esperamos 2 segundos para que se procese la navegación
+    menu.ir_a_dashboard_remis() # Navegamos al menú de dashboard remis
+    time.sleep(2) # Esperamos 2 segundos para que se procese la navegación
+    menu.ir_a_dashboard_charter() # Navegamos al menú de dashboard chárter
+    time.sleep(2) # Esperamos 2 segundos para que se procese la navegación
     menu.ir_a_mi_perfil() # Navegamos al menú de mi perfil
     time.sleep(2) # Esperamos 2 segundos para que se procese la navegación
     menu.ir_a_gestion_de_pasajeros() # Navegamos al menú de gestión de pasajeros
     time.sleep(2) # Esperamos 2 segundos para que se procese la navegación
     menu.ir_a_medios_de_pago() # Navegamos al menú de medios de pago
     time.sleep(2) # Esperamos 2 segundos para que se procese la navegación
-    menu.ir_a_soporte_telefonico() # Navegamos al menú de soporte telefónico
-    time.sleep(2) # Esperamos 2 segundos para que se procese la navegación
-    menu.ir_a_puntos_de_encuentro() # Navegamos al menú de puntos de encuentro
-    time.sleep(2) # Esperamos 2 segundos para que se procese la navegación
+    menu.ir_a_puntos_de_encuentro()
+    time.sleep(2) 
+    time.sleep(1.5) # Pausa para que el modal desaparezca y limpie la pantalla antes de seguir
     menu.ir_a_cambiar_contraseña() # Navegamos al menú de cambiar contraseña
     time.sleep(2) # Esperamos 2 segundos para que se procese la navegación
     menu.ir_a_terminos_y_condiciones() # Navegamos al menú de términos y condiciones

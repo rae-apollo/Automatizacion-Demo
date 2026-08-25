@@ -27,3 +27,22 @@ def driver():
     driver = webdriver.Chrome(service=service, options=chrome_options)
     yield driver
     driver.quit() # Cerramos el navegador al finalizar la prueba
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    # Ejecutamos el hook original y obtenemos el resultado
+    outcome = yield
+    report = outcome.get_result()
+
+    if item.obj.__doc__:
+
+        node_doc = item.obj.__doc__.strip().split("\n")[0]  # Obtenemos la primera línea de la docstring
+
+        if hasattr(item, 'callspec'):
+            # Si la prueba es parametrizada, obtenemos los parámetros
+            params = f"[{item.callspec.id}]"
+            report.nodeid = f"{node_doc} {params}"
+        else:
+            report.nodeid = node_doc
+

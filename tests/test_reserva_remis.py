@@ -4,13 +4,14 @@ from pages.login_page import LoginPage
 from pages.menu_component import MenuComponent 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from pages.reserva_page import ReservaPage    
 from data.data_login import LOGIN_WEB_CLIENTES
 
 USUARIO_VALIDO, PASSWORD_VALIDO, _= LOGIN_WEB_CLIENTES[0]
 
 # Función de prueba para verificar la reserva de remis de punto a punto.
-def test_reserva_remis_punto_a_punto(driver):
+def test_reserva_remis_punto_a_punto(driver, record_property):
     """ CASO 1 : Reserva de remis de punto a punto"""
     login_page = LoginPage(driver) # Creamos una instancia de LoginPage
     menu = MenuComponent(driver) # Creamos una instancia de MenuComponent
@@ -31,3 +32,15 @@ def test_reserva_remis_punto_a_punto(driver):
     driver.save_screenshot("screenshot_reserva_exitosa.png") # Tomamos una captura de pantalla del resultado de la reserva exitosa
     assert except_url_part in driver.current_url, f"Se esperaba que la URL contenga '{except_url_part}' pero se obtuvo '{driver.current_url}'" # Verificamos que la URL contenga la parte esperada
     time.sleep(5) # Esperamos 5 segundos para observar el resultado (puedes ajustar este tiempo según sea necesario)
+
+    # --- EXTRAER CÓDIGO DE RESERVA PARA EL REPORTE ---
+    try:
+        codigo_element = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//span[contains(@class, 'bg-green-500')]"))
+        )
+        codigo_reserva = codigo_element.text.strip()
+        record_property("status_code", codigo_reserva)
+    except Exception as e:
+        record_property("status_code", "ERROR")
+
+    time.sleep(5)

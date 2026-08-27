@@ -1,3 +1,4 @@
+pytest_plugins = ["conftest"]
 import pytest
 import logging
 import pathlib
@@ -37,17 +38,3 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-@pytest.hookimpl(hookwrapper=True)
-# Hook para capturar el resultado de cada prueba y registrar información relevante.
-def pytest_runtest_makereport(item, call):
-    outcome = yield
-    report = outcome.get_result()
-    if report.when == "call":
-        report.status_code = getattr(item, "status_code", "N/A")
-# Hook para agregar una columna de "Status Code" en el reporte HTML.
-def pytest_html_results_table_header(cells):
-    cells.insert(1, '<th>Status Code</th>')
-# Hook para agregar el valor del "Status Code" en la fila correspondiente del reporte HTML.
-def pytest_html_results_table_row(report, cells):
-    status = getattr(report, "status_code", "N/A")
-    cells.insert(1, f'<td>{status}</td>')

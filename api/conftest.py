@@ -3,6 +3,7 @@ import pytest
 import logging
 import pathlib
 import requests
+from data.data_login import API_LOGIN_EXITOSO
 
 @pytest.fixture(scope="session")
 # Fixture para obtener la URL base de la API.
@@ -23,9 +24,10 @@ def realizar_login(api_url):
     return _login
 
 @pytest.fixture(scope="session")
-# Fixture para obtener el token de cliente.
+# Fixture para obtener el token de cliente que realiza login.
 def token_cliente(realizar_login):
-    response = realizar_login("/clientes/auth/accesstoken", "ehs@sommytech.com.ar", "123456")
+    ruta_endpoint, username, password = API_LOGIN_EXITOSO[0]  # Tomamos el primer conjunto de credenciales válidas
+    response = realizar_login(ruta_endpoint, username, password)
     return response.json().get("token")
 # Fixture para configurar el logger.
 path_dir = pathlib.Path('logs')

@@ -31,9 +31,8 @@ def test_reserva_remis_punto_a_punto(driver, record_property):
     except_url_part = "booking"
     driver.save_screenshot("screenshot_reserva_exitosa.png") # Tomamos una captura de pantalla del resultado de la reserva exitosa
     assert except_url_part in driver.current_url, f"Se esperaba que la URL contenga '{except_url_part}' pero se obtuvo '{driver.current_url}'" # Verificamos que la URL contenga la parte esperada
-    time.sleep(5) # Esperamos 5 segundos para observar el resultado (puedes ajustar este tiempo según sea necesario)
-
-    # --- EXTRAER CÓDIGO DE RESERVA PARA EL REPORTE ---
+    time.sleep(5) # 
+    # EXTRAE EL CÓDIGO DE RESERVA PARA EL REPORTE.
     try:
         codigo_element = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//span[contains(@class, 'bg-green-500')]"))
@@ -42,5 +41,4 @@ def test_reserva_remis_punto_a_punto(driver, record_property):
         record_property("status_code", codigo_reserva)
     except Exception as e:
         record_property("status_code", "ERROR")
-
     time.sleep(5)

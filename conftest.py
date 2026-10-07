@@ -5,7 +5,9 @@ import pytest
 def pytest_runtest_makereport(item, call):
     outcome = yield
     report = outcome.get_result()
-# Agrega el código de estado a los reportes de prueba.
+    if hasattr(item, "callspec"):
+        report.nodeid = item.callspec.id
+#  Agrega el código de estado a los reportes de prueba.
     if report.when == "call":
         status_code = "N/A"
         for prop in item.user_properties:

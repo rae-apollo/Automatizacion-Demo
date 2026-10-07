@@ -36,17 +36,20 @@ class ReservaPage:
         print(f"Dirección de origen seleccionada: {direccion}") # Imprimimos la dirección seleccionada para verificar que se haya seleccionado correctamente
     def completar_piso_departamento(self, info_adicional=None):
         if not info_adicional:
-            print("No se proporciono información adicional, o se omite el campo de piso y departamento.")# Si no se proporciona información adicional, o se omite el campo de piso y departamento, simplemente no hacemos nada y continuamos con el proceso de reserva
             return
         try: 
-            espera_corta = WebDriverWait(self.driver, 5) # Espera corta para verificar si aparece el campo de piso y departamento
-            campo = espera_corta.until(EC.visibility_of_element_located(self.input_piso_depto)) # Verificamos si aparece el campo de piso y departamento
-            self.driver.execute_script("arguments[0].scrollIntoView(true);", campo) # Hacemos scroll hasta el campo de piso y departamento para asegurarnos de que esté visible
-            campo.clear() # Limpiamos el campo de piso y departamento
-            campo.send_keys(info_adicional) # Ingresamos la información adicional en el campo de piso y departamento
-            print(f"Información adicional ingresada en el campo de piso y departamento: {info_adicional}") # Imprimimos la información adicional ingresada para verificar que se haya ingresado correctamente
-        except:
-            print("El campo de piso y departamento no apareció, se omite este paso.") # Si el campo de piso y departamento no aparece, simplemente imprimimos un mensaje indicando que se omite este paso y continuamos con el proceso de reserva
+            campo_piso_depto = self.wait.until(EC.element_to_be_clickable(self.input_piso_depto)) # Esperamos a que el campo de piso y departamento sea clickeable
+            valor_actual = (campo_piso_depto.get_attribute("value") or "").strip() # Obtenemos el valor actual del campo de piso y departamento
+            valor_nuevo = info_adicional.strip() # Limpiamos el valor nuevo ingresado
+            if valor_actual == valor_nuevo:
+                print(f"El campo piso y departamento ya contiene el valor esperado: {valor_nuevo}. No se realizará ninguna acción.")
+                return
+            campo_piso_depto.send_keys(Keys.CONTROL + "a") # Seleccionamos todo el texto actual en el campo de piso y departamento
+            campo_piso_depto.send_keys(Keys.BACK_SPACE) # Borramos el texto actual en el campo de piso y departamento
+            campo_piso_depto.send_keys(valor_nuevo) # Ingresamos el nuevo valor
+            print(f"Información adicional actualizada en el campo de piso y departamento: {valor_nuevo}") # Imprimimos la información adicional ingresada para verificar que se haya ingresado correctamente
+        except Exception as e:
+            print(f"No se pudo completar el campo de piso y departamento: {e}") # Si ocurre un error al completar el campo de piso y departamento, imprimimos el error para poder depurarlo
     def seleccionar_destino(self, direccion):
         try:
             # 1. Abrir el buscador (click en el campo de destino inicial)

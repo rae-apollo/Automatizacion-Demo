@@ -28,7 +28,7 @@ def driver():
     yield driver
     driver.quit() # Cerramos el navegador al finalizar la prueba
 
-
+# Fixture para inicializar y cerrar el driver de Selenium con Firefox.
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     # Ejecutamos el hook original y obtenemos el resultado

@@ -15,9 +15,11 @@ class ReservaPage:
         self.btn_continuar = (By.XPATH, "//button//span[contains(text(), 'Continuar')]")
         self.btn_confirmar = (By.XPATH, "//button//span[contains(text(), 'Confirmar')]") # Botón de confirmar para avanzar al siguiente paso del proceso de reserva
     def seleccionar_origen(self, direccion):
-        activador = self.wait.until(EC.element_to_be_clickable(self.btn_origen))
-        activador.click() # Hacemos click en el campo de origen para activar el input
-        time.sleep(1) # Esperamos 1 segundo para que el input se active (puedes ajustar este tiempo según sea necesario)    
+        inputs_visibles = self.driver.find_elements(By.XPATH, "//input[contains(@placeholder, 'dirección')]")
+        if not inputs_visibles or not inputs_visibles[0].is_displayed():
+            activador = self.wait.until(EC.element_to_be_clickable(self.btn_origen))
+            activador.click() # Hacemos click en el campo de origen para activar el input
+            time.sleep(1) # Esperamos 1 segundo para que el input se active (puedes ajustar este tiempo según sea necesario)    
         input_origen = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[contains(@placeholder, 'dirección')]")))
         input_origen.click() # Hacemos click en el input de origen para asegurarnos de que esté activo
         input_origen.clear() # Limpiamos el input de origen
@@ -52,13 +54,15 @@ class ReservaPage:
             print(f"No se pudo completar el campo de piso y departamento: {e}") # Si ocurre un error al completar el campo de piso y departamento, imprimimos el error para poder depurarlo
     def seleccionar_destino(self, direccion):
         try:
-            # 1. Abrir el buscador (click en el campo de destino inicial)
-            activador = self.wait.until(EC.element_to_be_clickable(self.btn_destino))
-            activador.click()
-            time.sleep(1) 
-            
-            # 2. Localizar y preparar el input real de escritura
-            input_destino = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[contains(@placeholder, 'dirección')]")))
+            try:
+                input_destino = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[contains(@placeholder, 'dirección')]")))
+            except Exception:
+                # 1. Abrir el buscador (click en el campo de destino inicial)
+                activador = self.wait.until(EC.element_to_be_clickable(self.btn_destino))
+                activador.click()
+                time.sleep(1) 
+                # 2. Localizar y preparar el input real de escritura
+                input_destino = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[contains(@placeholder, 'dirección')]")))
             input_destino.click()
             input_destino.clear()
             
@@ -97,6 +101,7 @@ class ReservaPage:
             time.sleep(2)
         except Exception as e:
             print(f"Error crítico en seleccionar_destino: {e}")
+            raise  # IMPORTANTE: Esto evita que el test continúe si no se puede seleccionar el destino, lo cual es crítico para la prueba.
     def hacer_click_continuar(self):
         try:
             print("Buscando botón de continuar...")

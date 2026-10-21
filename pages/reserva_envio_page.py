@@ -11,7 +11,7 @@ class ReservaEnvioPage (ReservaPage):
         super().__init__(driver)  # Llamamos al constructor de la clase base ReservaPage
         self.btn_direccion_retiro = (By.XPATH, "//span[contains(text(), ' ¿Dónde lo vamos a retirar? ')]") # Campo de dirección de retiro
         self.btn_detalle_del_envio = (By.XPATH, "//span[contains(text(), ' Detalle del envío/s ')]") # Boton para abrir el detalle del envío
-        self.btn_agregar_envio = (By.XPATH, "//span[contains(text(), 'Agregar')]") # Botón para agregar un nuevo envío
+        self.btn_agregar_envio_mensajeria = (By.XPATH, "//span[contains(text(), 'Agregar')]") # Botón para agregar un nuevo envío
         # Se cambia el nombre del campo de destino para reflejar que es la dirección de entrega del envío
         self.btn_destino = (By.XPATH, "//span[contains(text(), ' ¿Dónde lo entregamos? ')]") # Campo de destino
         self.entrega_input = (By.XPATH, "//span[@placeholder='escriba una dirección, hotel o aeropuerto.']") # Input de destino
@@ -62,8 +62,8 @@ class ReservaEnvioPage (ReservaPage):
         detalle_envio.click() # Hacemos click en el botón de detalle del envío para abrir el formulario de envío
         time.sleep(1) # Esperamos 1 segundo para que se abra el formulario de envío (puedes ajustar este tiempo según sea necesario)
     # Función que hace click en el botón de agregar envío para abrir el formulario de envío.
-    def hacer_click_agregar_envio(self):
-        agregar_envio = self.wait.until(EC.element_to_be_clickable(self.btn_agregar_envio))
+    def hacer_click_agregar_envio_mensajeria(self):
+        agregar_envio = self.wait.until(EC.element_to_be_clickable(self.btn_agregar_envio_mensajeria))
         agregar_envio.click() # Hacemos click en el botón de agregar envío para abrir el formulario de envío
         time.sleep(1) # Esperamos 1 segundo para que se abra el formulario de envío (puedes ajustar este tiempo según sea necesario)
     # Función que completa los detalles del paquete como dimensiones, peso, cantidad de paquetes, tipo de contenido y valor declarado (si aplica)
@@ -112,10 +112,15 @@ class ReservaEnvioPage (ReservaPage):
         campo_contenido = self.wait.until(EC.visibility_of_element_located(self.input_tipo_de_contenido_sobre)) # Localizamos el campo de tipo de contenido del sobre
         campo_contenido.clear() # Limpiamos el campo de tipo de contenido del sobre
         campo_contenido.send_keys(tipo_contenido) # Ingresamos el tipo de contenido del sobre
-    def completar_datos_destinatario(self, nombre, dni, codigo_pais, codigo_area, numero_telefono):
+    def completar_datos_destinatario(self, nombre, codigo_pais, codigo_area, numero_telefono, dni=None):
         # Completamos los datos del destinatario o persona que recibe el paquete
         self.wait.until(EC.visibility_of_element_located(self.input_quien_recibe_el_paquete)).send_keys(nombre) # Ingresamos el nombre de la persona que recibe el paquete
-        self.wait.until(EC.visibility_of_element_located(self.input_dni_recibe_paquete)).send_keys(dni) # Ingresamos el DNI de la persona que recibe el paquete
+        if dni:
+            try:
+                self.wait.until(EC.visibility_of_element_located(self.input_dni_recibe_paquete)).send_keys(dni) # Ingresamos el DNI de la persona que recibe el paquete
+            except Exception:
+                pass
         self.wait.until(EC.visibility_of_element_located(self.input_cpais_telefono)).send_keys(codigo_pais) # Ingresamos el código de país para el número de teléfono del destinatario
         self.wait.until(EC.visibility_of_element_located(self.input_carea_telefono)).send_keys(codigo_area) # Ingresamos el código de área para el número de teléfono del destinatario
         self.wait.until(EC.visibility_of_element_located(self.input_numero_telefono)).send_keys(numero_telefono) # Ingresamos el número de teléfono del destinatario
+        time.sleep(1) # Esperamos 1 segundo para que se procese la información ingresada (puedes ajustar este tiempo según sea necesario)

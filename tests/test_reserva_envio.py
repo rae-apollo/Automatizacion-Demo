@@ -41,7 +41,7 @@ def test_reserva_envio(driver, record_property, tipo_item, detalle_item, descrip
     time.sleep(2)
     reserva_envio_page.hacer_click_detalle_envio()
     time.sleep(2)
-    reserva_envio_page.hacer_click_agregar_envio()
+    reserva_envio_page.hacer_click_agregar_envio_mensajeria()
     time.sleep(2)
     reserva_envio_page.seleccionar_destino("Av. Belgrano 553")
     time.sleep(3)
@@ -65,10 +65,10 @@ def test_reserva_envio(driver, record_property, tipo_item, detalle_item, descrip
         codigo_area="11",
         numero_telefono="12345678"
     )
-    reserva_envio_page.hacer_click_agregar_envio() # Guarda el primer paquete
+    reserva_envio_page.hacer_click_agregar_envio_mensajeria() # Guarda el primer paquete
     # 4. Segundo ítem (Solo si el test actual es 'paquete_y_sobre_documentacion')
     if tipo_item == "paquete_y_sobre_documentacion":
-        reserva_envio_page.hacer_click_agregar_envio() # Clic para abrir el nuevo formulario de ítem
+        reserva_envio_page.hacer_click_agregar_envio_mensajeria() # Clic para abrir el nuevo formulario de ítem
         time.sleep(1)
         reserva_envio_page.seleccionar_destino("Av. San Juan 1234")
         time.sleep(3)
@@ -84,7 +84,7 @@ def test_reserva_envio(driver, record_property, tipo_item, detalle_item, descrip
             numero_telefono="87654321"
         )
         time.sleep(2)
-        reserva_envio_page.hacer_click_agregar_envio() # Guarda el segundo ítem (Sobre)
+        reserva_envio_page.hacer_click_agregar_envio_mensajeria() # Guarda el segundo ítem (Sobre)
 
     # 5. Finalizar reserva y confirmación
     reserva_envio_page.hacer_click_continuar()
